@@ -8,7 +8,10 @@ import * as path from "path";
 import * as render from "koa-ejs";
 
 const app: Koa<DefaultContext, DefaultState> = new Koa();
-
+interface Error {
+    status?: number;
+    message?: string;
+}
 const router: Router = new Router();
 app.use(bodyParser());
 app.use(json());
@@ -34,9 +37,10 @@ app.use(
         } else {
             let authHeader = ctx.headers.authorization;
             if (!authHeader) {
-                let err = new Error();
+                let err: Error = new Error();
                 ctx.set("WWW-Authenticate", "Basic");
                 err.message = "not authenticated";
+                err.status = 404;
                 ctx.throw(err);
             }
 
@@ -47,9 +51,10 @@ app.use(
             if (username === "admin" && password === "123") {
                 await next();
             } else {
-                let err = new Error();
+                let err: Error = new Error();
                 ctx.set("WWW-Authenticate", "Basic");
                 err.message = "username or password wrong";
+                err.status = 404;
                 ctx.throw(err);
             }
         }
