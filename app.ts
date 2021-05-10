@@ -84,6 +84,7 @@ app.use(
     }
 );
 app.use(todoApp.routes()).use(todoApp.allowedMethods());
-app.listen(3002, () => {
+const server = app.listen(3002).on("listening", () => {
     console.log("typescript server started");
 });
+export default server;

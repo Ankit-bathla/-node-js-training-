@@ -7,7 +7,6 @@ let list: Array<{ name: string; id: number }> = [];
 router.get(
     "/list",
     async (ctx: ParameterizedContext<DefaultState, DefaultContext>) => {
-        console.log(list, "list");
         await ctx.render("todoApp", {
             list: list,
         });
