@@ -1,18 +1,19 @@
 import * as Koa from "koa";
 import * as bodyParser from "koa-bodyparser";
 import { DefaultState, DefaultContext, ParameterizedContext } from "koa";
-import * as Router from "koa-router";
 import * as json from "koa-json";
 import * as serve from "koa-static";
 import * as path from "path";
 import * as render from "koa-ejs";
-
+import home from "./typescriptRoutes/home";
+import signUp from "./typescriptRoutes/signUp";
+import taskOne from "./typescriptRoutes/task1";
+import todoApp from "./typescriptRoutes/todoApp";
 const app: Koa<DefaultContext, DefaultState> = new Koa();
 interface Error {
     status?: number;
     message?: string;
 }
-const router: Router = new Router();
 app.use(bodyParser());
 app.use(json());
 app.use(
@@ -60,7 +61,6 @@ app.use(
         }
     }
 );
-app.use(router.routes()).use(router.allowedMethods());
 app.use(serve("."));
 app.use(serve(path.join(__dirname, "/public")));
 render(app, {
@@ -68,90 +68,22 @@ render(app, {
     layout: "layout",
 });
 
-let list: Array<{ name: string; id: number }> = [];
-router.get(
-    "/",
-    async (ctx: ParameterizedContext<DefaultState, DefaultContext>) => {
-        ctx.body = { msg: "Hello world" };
-    }
-);
-router.get(
-    "/signUp",
-    async (ctx: ParameterizedContext<DefaultState, DefaultContext>) => {
-        ctx.body = { msg: "signUp here" };
-    }
-);
-router.get(
-    "/error",
+app.use(home.routes()).use(home.allowedMethods());
+app.use(signUp.routes()).use(signUp.allowedMethods());
+app.use(taskOne.routes()).use(taskOne.allowedMethods());
+app.use(
     async (
         ctx: ParameterizedContext<DefaultState, DefaultContext>,
         next: () => Promise<any>
     ) => {
-        try {
+        if (ctx.path === "/error") {
+            ctx.throw("custom error");
+        } else {
             await next();
-        } catch (err) {
-            ctx.body = {
-                error: {
-                    message: "internal server error",
-                    status: 500,
-                },
-            };
         }
     }
 );
-app.use(async (ctx: ParameterizedContext<DefaultState, DefaultContext>) => {
-    ctx.throw("custom error");
-});
-router.get(
-    "/hello",
-    (ctx: ParameterizedContext<DefaultState, DefaultContext>) => {
-        ctx.body = "world";
-    }
-);
-router.get(
-    "/echo",
-    (ctx: ParameterizedContext<DefaultState, DefaultContext>) => {
-        ctx.body = `${ctx.query.person}`;
-    }
-);
-router.get(
-    "/echo/:name",
-    (ctx: ParameterizedContext<DefaultState, DefaultContext>) => {
-        ctx.body = `hi ${ctx.params.name}`;
-    }
-);
-router.get(
-    "/list",
-    async (ctx: ParameterizedContext<DefaultState, DefaultContext>) => {
-        console.log(list, "list");
-        await ctx.render("todoApp", {
-            list: list,
-        });
-    }
-);
-router.post(
-    "/list",
-    async (ctx: ParameterizedContext<DefaultState, DefaultContext>) => {
-        const item: string = ctx.request.body.new;
-        const id: number = Date.now();
-        const todoItem = {
-            name: item,
-            id: id,
-        };
-        if (item !== "") {
-            list.push(todoItem);
-        }
-        ctx.redirect("/list");
-    }
-);
-router.get(
-    "/list/delete",
-    async (ctx: ParameterizedContext<DefaultState, DefaultContext>) => {
-        const id: any = ctx.request.query.id;
-        list = list.filter((item) => item.id !== parseInt(id));
-        ctx.redirect("/list");
-    }
-);
+app.use(todoApp.routes()).use(todoApp.allowedMethods());
 app.listen(3002, () => {
     console.log("typescript server started");
 });
