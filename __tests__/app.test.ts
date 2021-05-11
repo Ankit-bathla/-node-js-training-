@@ -11,7 +11,7 @@ test("should be able to test the app.ts and get request  /", async () => {
     const response = await request(app).get("/");
 
     expect(response.status).toBe(200);
-    expect(response.body).toEqual({ msg: "Hello typescript" });
+    expect(response.body).toEqual({ msg: "hello Typescript" });
 });
 test("should be able to test the app.ts get request /signUp", async () => {
     const response = await request(app).get("/signUp");

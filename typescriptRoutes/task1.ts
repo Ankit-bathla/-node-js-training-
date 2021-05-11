@@ -1,42 +1,89 @@
 import { DefaultState, DefaultContext, ParameterizedContext } from "koa";
 import * as Router from "koa-router";
 
-const router: Router = new Router();
+interface taskOneRouter {
+    getWorld: () => {};
+    getQueryName: (
+        ctx: ParameterizedContext<DefaultState, DefaultContext>
+    ) => {};
+    getParamsName: (
+        ctx: ParameterizedContext<DefaultState, DefaultContext>
+    ) => {};
+    getError: () => {};
+}
 
-router.get(
-    "/hello",
-    (ctx: ParameterizedContext<DefaultState, DefaultContext>) => {
-        ctx.body = "world";
+class TaskOne implements taskOneRouter {
+    public static instance: TaskOne | undefined = undefined;
+    public static getInstance(): TaskOne {
+        if (this.instance !== undefined) return this.instance;
+        this.instance = new TaskOne();
+        return this.instance;
     }
-);
-router.get(
-    "/echo",
-    (ctx: ParameterizedContext<DefaultState, DefaultContext>) => {
-        ctx.body = `${ctx.query.person}`;
+    constructor() {}
+
+    getWorld() {
+        return "world";
     }
-);
-router.get(
-    "/echo/:name",
-    (ctx: ParameterizedContext<DefaultState, DefaultContext>) => {
-        ctx.body = `hi ${ctx.params.name}`;
+    getQueryName(ctx: ParameterizedContext<DefaultState, DefaultContext>) {
+        return ctx.query.person;
     }
-);
-router.get(
-    "/error",
-    async (
+    getParamsName(ctx: ParameterizedContext<DefaultState, DefaultContext>) {
+        return `hi ${ctx.params.name}`;
+    }
+    getError() {
+        return {
+            error: {
+                message: "internal server error",
+                status: 500,
+            },
+        };
+    }
+}
+
+const router = new Router();
+const taskOneInstance = new TaskOne();
+type methods = "GET";
+
+const routes: { url: string; methods: methods[]; route: Function }[] = [
+    {
+        url: "/hello",
+        methods: ["GET"],
+        route: taskOneInstance.getWorld,
+    },
+    {
+        url: "/echo",
+        methods: ["GET"],
+        route: taskOneInstance.getQueryName,
+    },
+    {
+        url: "/echo/:name",
+        methods: ["GET"],
+        route: taskOneInstance.getParamsName,
+    },
+    {
+        url: "/error",
+        methods: ["GET"],
+        route: taskOneInstance.getError,
+    },
+];
+function routerHandler(route: Function) {
+    return async (
         ctx: ParameterizedContext<DefaultState, DefaultContext>,
         next: () => Promise<any>
     ) => {
         try {
             await next();
+            const response = await route(ctx);
+            ctx.status = 200;
+            ctx.body = response;
         } catch (err) {
-            ctx.body = {
-                error: {
-                    message: "internal server error",
-                    status: 500,
-                },
-            };
+            const response = await route(ctx);
+            ctx.body = response;
         }
-    }
-);
+    };
+}
+for (let item of routes) {
+    const { url, methods, route } = item;
+    router.register(url, methods, routerHandler(route));
+}
 export default router;

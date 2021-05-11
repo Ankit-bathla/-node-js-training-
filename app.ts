@@ -33,7 +33,11 @@ app.use(
         ctx: ParameterizedContext<DefaultState, DefaultContext>,
         next: () => Promise<any>
     ) => {
-        if (ctx.path === "/" || ctx.path === "/signUp") {
+        if (
+            ctx.path === "/" ||
+            ctx.path === "/signUp" ||
+            ctx.path === "/helloWorld"
+        ) {
             await next();
         } else {
             let authHeader = ctx.headers.authorization;
