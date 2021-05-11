@@ -15,9 +15,9 @@ class SignUp implements SignUpRouter {
     }
     constructor() {}
 
-    signUpHere() {
+    signUpHere = () => {
         return { msg: "signUp here" };
-    }
+    };
 }
 
 const router = new Router();

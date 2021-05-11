@@ -21,23 +21,27 @@ class TaskOne implements taskOneRouter {
     }
     constructor() {}
 
-    getWorld() {
+    getWorld = () => {
         return "world";
-    }
-    getQueryName(ctx: ParameterizedContext<DefaultState, DefaultContext>) {
+    };
+    getQueryName = (
+        ctx: ParameterizedContext<DefaultState, DefaultContext>
+    ) => {
         return ctx.query.person;
-    }
-    getParamsName(ctx: ParameterizedContext<DefaultState, DefaultContext>) {
+    };
+    getParamsName = (
+        ctx: ParameterizedContext<DefaultState, DefaultContext>
+    ) => {
         return `hi ${ctx.params.name}`;
-    }
-    getError() {
+    };
+    getError = () => {
         return {
             error: {
                 message: "internal server error",
                 status: 500,
             },
         };
-    }
+    };
 }
 
 const router = new Router();

@@ -23,12 +23,16 @@ class TodoApp implements ToDoAppRouter {
     }
 
     constructor() {}
-    async getTodoList(ctx: ParameterizedContext<DefaultState, DefaultContext>) {
+    getTodoList = async (
+        ctx: ParameterizedContext<DefaultState, DefaultContext>
+    ) => {
         return await ctx.render("todoApp", {
             list: list,
         });
-    }
-    postTodoItem(ctx: ParameterizedContext<DefaultState, DefaultContext>) {
+    };
+    postTodoItem = (
+        ctx: ParameterizedContext<DefaultState, DefaultContext>
+    ) => {
         const item: string = ctx.request.body.new;
         const id: number = Date.now();
         const todoItem = {
@@ -38,11 +42,13 @@ class TodoApp implements ToDoAppRouter {
         if (item !== "") {
             list.push(todoItem);
         }
-    }
-    deleteTodoItem(ctx: ParameterizedContext<DefaultState, DefaultContext>) {
+    };
+    deleteTodoItem = (
+        ctx: ParameterizedContext<DefaultState, DefaultContext>
+    ) => {
         const id: any = ctx.request.query.id;
         list = list.filter((item) => item.id !== parseInt(id));
-    }
+    };
 }
 const router = new Router();
 

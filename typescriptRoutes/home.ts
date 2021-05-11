@@ -15,11 +15,11 @@ class Home implements HomeRouter {
 
     constructor() {}
 
-    getHello() {
+    getHello = () => {
         return {
             msg: "hello Typescript",
         };
-    }
+    };
 }
 const router = new Router();
 
