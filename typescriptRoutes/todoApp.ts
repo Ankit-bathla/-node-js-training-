@@ -1,6 +1,6 @@
 import { DefaultState, DefaultContext, ParameterizedContext } from "koa";
 import * as Router from "koa-router";
-
+import routerHandler from "./routerHandler";
 interface ToDoAppRouter {
     getTodoList: (
         ctx: ParameterizedContext<DefaultState, DefaultContext>
@@ -72,20 +72,6 @@ const routes: { url: string; methods: methods[]; route: Function }[] = [
         route: toDoAppInstance.deleteTodoItem,
     },
 ];
-function routerHandler(route: Function) {
-    return async (ctx: ParameterizedContext<DefaultState, DefaultContext>) => {
-        const response = await route(ctx);
-        ctx.status = 200;
-        if (
-            ctx.path === "/list/delete" ||
-            (ctx.path === "/list" && ctx.method === "POST")
-        ) {
-            ctx.redirect("/list");
-        } else {
-            return response;
-        }
-    };
-}
 for (let item of routes) {
     const { url, methods, route } = item;
     router.register(url, methods, routerHandler(route));

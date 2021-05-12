@@ -1,5 +1,6 @@
 import { DefaultState, DefaultContext, ParameterizedContext } from "koa";
 import * as Router from "koa-router";
+import routerHandler from "./routerHandler";
 
 interface taskOneRouter {
     getWorld: () => {};
@@ -70,22 +71,6 @@ const routes: { url: string; methods: methods[]; route: Function }[] = [
         route: taskOneInstance.getError,
     },
 ];
-function routerHandler(route: Function) {
-    return async (
-        ctx: ParameterizedContext<DefaultState, DefaultContext>,
-        next: () => Promise<any>
-    ) => {
-        try {
-            await next();
-            const response = await route(ctx);
-            ctx.status = 200;
-            ctx.body = response;
-        } catch (err) {
-            const response = await route(ctx);
-            ctx.body = response;
-        }
-    };
-}
 for (let item of routes) {
     const { url, methods, route } = item;
     router.register(url, methods, routerHandler(route));

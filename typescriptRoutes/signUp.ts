@@ -1,5 +1,5 @@
-import { DefaultState, DefaultContext, ParameterizedContext } from "koa";
 import * as Router from "koa-router";
+import routerHandler from "./routerHandler";
 
 interface SignUpRouter {
     signUpHere: () => {};
@@ -33,14 +33,6 @@ const routes: { url: string; methods: methods[]; route: Function }[] = [
         route: signUpInstance.signUpHere,
     },
 ];
-
-function routerHandler(route: Function) {
-    return async (ctx: ParameterizedContext<DefaultState, DefaultContext>) => {
-        const response = await route();
-        ctx.status = 200;
-        ctx.body = response;
-    };
-}
 for (let item of routes) {
     const { url, methods, route } = item;
     router.register(url, methods, routerHandler(route));
