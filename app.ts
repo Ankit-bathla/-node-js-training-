@@ -1,4 +1,5 @@
 import * as Koa from "koa";
+import inBoundRequestLogger from "./config/winston";
 import * as bodyParser from "koa-bodyparser";
 import { DefaultState, DefaultContext, ParameterizedContext } from "koa";
 import * as json from "koa-json";
@@ -13,6 +14,7 @@ const app: Koa<DefaultContext, DefaultState> = new Koa();
 interface Error {
     status?: number;
     message?: string;
+    body?: Object;
 }
 app.use(bodyParser());
 app.use(json());
@@ -28,6 +30,7 @@ app.use(
         }
     }
 );
+app.use(inBoundRequestLogger);
 app.use(
     async (
         ctx: ParameterizedContext<DefaultState, DefaultContext>,
@@ -45,7 +48,11 @@ app.use(
                 let err: Error = new Error();
                 ctx.set("WWW-Authenticate", "Basic");
                 err.message = "not authenticated";
-                err.status = 404;
+                err.status = 401;
+                err.body = {
+                    msg: "not authenticated",
+                    status: 401,
+                };
                 ctx.throw(err);
             }
 
@@ -59,7 +66,12 @@ app.use(
                 let err: Error = new Error();
                 ctx.set("WWW-Authenticate", "Basic");
                 err.message = "username or password wrong";
-                err.status = 404;
+                err.status = 401;
+                err.body = {
+                    msg: "username or password wrong",
+                    status: 401,
+                };
+
                 ctx.throw(err);
             }
         }
