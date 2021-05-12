@@ -26,7 +26,8 @@ app.use(
         try {
             await next();
         } catch (err) {
-            ctx.throw(err);
+            ctx.status = 401;
+            ctx.body = err.body;
         }
     }
 );
