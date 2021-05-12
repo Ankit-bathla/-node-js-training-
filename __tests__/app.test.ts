@@ -61,13 +61,13 @@ test("should be able to test the app.ts get request /error with incorrect auth t
         .set("Authorization", "Basic YWRtaW46MTIx");
 
     expect(response.text).toEqual("username or password wrong");
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(401);
 });
 test("should be able to test the app.ts get request /hello without  auth token", async () => {
     const response = await await request(app).get("/hello");
 
     expect(response.text).toEqual("not authenticated");
-    expect(response.status).toBe(404);
+    expect(response.status).toBe(401);
 });
 test("should be able to test the app.ts get request /list  of todoApp with correct auth token", async () => {
     const response = await await request(app)
