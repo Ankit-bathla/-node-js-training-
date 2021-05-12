@@ -9,6 +9,42 @@ const app = new Koa();
 const router = new KoaRouter();
 app.use(json());
 app.use(bodyParser());
+app.use(async (ctx, next) => {
+    try {
+        await next();
+    } catch (err) {
+        ctx.throw(err);
+    }
+});
+app.use(async (ctx, next) => {
+    if (ctx.path === "/" || ctx.path === "/signUp") {
+        await next();
+    } else {
+        let authHeader = ctx.headers.authorization;
+        if (!authHeader) {
+            let err = new Error();
+            ctx.set("WWW-Authenticate", "Basic");
+            err.status = 401;
+            err.message = "not authenticated";
+            ctx.throw(err);
+        }
+        let auth = new Buffer.from(authHeader.split(" ")[1], "base64")
+            .toString()
+            .split(":");
+
+        let username = auth[0];
+        let password = auth[1];
+        if (username === "admin" && password === "123") {
+            await next();
+        } else {
+            let err = new Error();
+            ctx.set("WWW-Authenticate", "Basic");
+            err.status = 401;
+            err.message = "username or password wrong";
+            ctx.throw(err);
+        }
+    }
+});
 app.use(router.routes()).use(router.allowedMethods());
 app.use(serve("."));
 app.use(serve(path.join(__dirname, "/public")));

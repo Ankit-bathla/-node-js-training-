@@ -8,10 +8,58 @@ import * as path from "path";
 import * as render from "koa-ejs";
 
 const app: Koa<DefaultContext, DefaultState> = new Koa();
-
+interface Error {
+    status?: number;
+    message?: string;
+}
 const router: Router = new Router();
 app.use(bodyParser());
 app.use(json());
+app.use(
+    async (
+        ctx: ParameterizedContext<DefaultState, DefaultContext>,
+        next: () => Promise<any>
+    ) => {
+        try {
+            await next();
+        } catch (err) {
+            ctx.throw(err);
+        }
+    }
+);
+app.use(
+    async (
+        ctx: ParameterizedContext<DefaultState, DefaultContext>,
+        next: () => Promise<any>
+    ) => {
+        if (ctx.path === "/" || ctx.path === "/signUp") {
+            await next();
+        } else {
+            let authHeader = ctx.headers.authorization;
+            if (!authHeader) {
+                let err: Error = new Error();
+                ctx.set("WWW-Authenticate", "Basic");
+                err.message = "not authenticated";
+                err.status = 404;
+                ctx.throw(err);
+            }
+
+            let data = authHeader.split(" ")[1];
+            let auth = Buffer.from(data, "base64").toString().split(":");
+            let username: string = auth[0];
+            let password: string = auth[1];
+            if (username === "admin" && password === "123") {
+                await next();
+            } else {
+                let err: Error = new Error();
+                ctx.set("WWW-Authenticate", "Basic");
+                err.message = "username or password wrong";
+                err.status = 404;
+                ctx.throw(err);
+            }
+        }
+    }
+);
 app.use(router.routes()).use(router.allowedMethods());
 app.use(serve("."));
 app.use(serve(path.join(__dirname, "/public")));
