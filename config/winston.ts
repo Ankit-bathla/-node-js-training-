@@ -33,6 +33,7 @@ class WinstonLogger implements WinstonClass {
 
     constructor(parameter: typeof winston) {
         this.logger = parameter.createLogger({
+            format: winston.format.json(),
             transports: [
                 new parameter.transports.File({
                     filename: "info.txt",
@@ -40,7 +41,6 @@ class WinstonLogger implements WinstonClass {
                 }),
                 new parameter.transports.Console(),
             ],
-            format: winston.format.json(),
         });
     }
 
