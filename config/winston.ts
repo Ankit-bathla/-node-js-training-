@@ -1,4 +1,4 @@
-import * as winston from "winston";
+import * as winstonLog from "winston";
 import { DefaultState, DefaultContext, ParameterizedContext } from "koa";
 
 enum LogLevel {
@@ -17,23 +17,23 @@ interface LoggerMessage {
     method: string;
 }
 
-interface WinstonClass {
+interface IWinstonLogger {
     log(LogMessage: LoggerMessage): void;
 }
 
-class WinstonLogger implements WinstonClass {
-    public logger: winston.Logger;
+class WinstonLogger implements IWinstonLogger {
+    public logger: winstonLog.Logger;
 
     public static instance: WinstonLogger | undefined = undefined;
     public static getInstance(): WinstonLogger {
         if (this.instance !== undefined) return this.instance;
-        this.instance = new WinstonLogger(winston);
+        this.instance = new WinstonLogger(winstonLog);
         return this.instance;
     }
 
-    constructor(parameter: typeof winston) {
+    constructor(parameter: typeof winstonLog) {
         this.logger = parameter.createLogger({
-            format: winston.format.json(),
+            format: parameter.format.json(),
             transports: [
                 new parameter.transports.File({
                     filename: "info.txt",
@@ -50,7 +50,7 @@ class WinstonLogger implements WinstonClass {
     };
 }
 
-const createWinstonLogger = new WinstonLogger(winston);
+const createWinstonLogger = () => WinstonLogger.getInstance();
 
 const inBoundRequestLogger = async (
     ctx: ParameterizedContext<DefaultState, DefaultContext>,
@@ -61,7 +61,7 @@ const inBoundRequestLogger = async (
         await next();
         const finishTimeStamp = Date.now();
         const duration = finishTimeStamp - startTimeStamp;
-        createWinstonLogger.log({
+        createWinstonLogger().log({
             level: LogLevel.Info,
             startTimeStamp,
             duration,
@@ -73,7 +73,7 @@ const inBoundRequestLogger = async (
         const startTimeStamp = Date.now();
         const finishTimeStamp = Date.now();
         const duration = finishTimeStamp - startTimeStamp;
-        createWinstonLogger.log({
+        createWinstonLogger().log({
             level: LogLevel.Error,
             startTimeStamp,
             duration,
