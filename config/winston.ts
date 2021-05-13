@@ -56,8 +56,8 @@ const inBoundRequestLogger = async (
     ctx: ParameterizedContext<DefaultState, DefaultContext>,
     next: () => Promise<any>
 ) => {
+    const startTimeStamp = Date.now();
     try {
-        const startTimeStamp = Date.now();
         await next();
         const finishTimeStamp = Date.now();
         const duration = finishTimeStamp - startTimeStamp;
@@ -70,7 +70,6 @@ const inBoundRequestLogger = async (
             method: ctx.method,
         });
     } catch (err) {
-        const startTimeStamp = Date.now();
         const finishTimeStamp = Date.now();
         const duration = finishTimeStamp - startTimeStamp;
         createWinstonLogger().log({
