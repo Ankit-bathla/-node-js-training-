@@ -1,5 +1,5 @@
 import * as Koa from "koa";
-import inBoundRequestLogger from "./config/winston";
+import inBoundRequestLogger from "./middleware/winston";
 import * as bodyParser from "koa-bodyparser";
 import { DefaultState, DefaultContext, ParameterizedContext } from "koa";
 import * as json from "koa-json";
