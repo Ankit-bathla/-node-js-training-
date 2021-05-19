@@ -77,7 +77,7 @@ const inBoundRequestLogger = async (
             startTimeStamp,
             duration,
             routeName: ctx.url,
-            message: err.body.msg,
+            message: err?.body?.msg || err?.body?.error?.message,
             method: ctx.method,
         });
         ctx.throw(err);

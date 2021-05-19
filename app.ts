@@ -12,6 +12,7 @@ import home from "./typescriptRoutes/home";
 import signUp from "./typescriptRoutes/signUp";
 import taskOne from "./typescriptRoutes/task1";
 import todoApp from "./typescriptRoutes/todoApp";
+import factorial from "./typescriptRoutes/factorial";
 const app: Koa<DefaultContext, DefaultState> = new Koa();
 app.use(bodyParser());
 app.use(json());
@@ -24,7 +25,7 @@ render(app, {
     root: path.join(__dirname, "views"),
     layout: "layout",
 });
-
+app.use(factorial.routes()).use(factorial.allowedMethods());
 app.use(home.routes()).use(home.allowedMethods());
 app.use(signUp.routes()).use(signUp.allowedMethods());
 app.use(taskOne.routes()).use(taskOne.allowedMethods());
