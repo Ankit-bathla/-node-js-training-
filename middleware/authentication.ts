@@ -14,6 +14,12 @@ interface IAuthentication {
 }
 
 class Auth implements IAuthentication {
+    public static instance: Auth | undefined = undefined;
+    public static getInstance(): Auth {
+        if (this.instance !== undefined) return this.instance;
+        this.instance = new Auth();
+        return this.instance;
+    }
     constructor() {}
 
     handleAuth = async (
@@ -62,6 +68,6 @@ class Auth implements IAuthentication {
     };
 }
 
-const authInstance = new Auth();
+const authInstance = Auth.getInstance();
 
 export default authInstance.handleAuth;

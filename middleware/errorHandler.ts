@@ -8,6 +8,13 @@ interface IErrorHandler {
 }
 
 class ErrorHandler implements IErrorHandler {
+    public static instance: ErrorHandler | undefined = undefined;
+
+    public static getInstance(): ErrorHandler {
+        if (this.instance !== undefined) return this.instance;
+        this.instance = new ErrorHandler();
+        return this.instance;
+    }
     constructor() {}
 
     handleError = async (
@@ -23,6 +30,6 @@ class ErrorHandler implements IErrorHandler {
     };
 }
 
-const ErrorHandlerInstance = new ErrorHandler();
+const ErrorHandlerInstance = ErrorHandler.getInstance();
 
 export default ErrorHandlerInstance.handleError;
