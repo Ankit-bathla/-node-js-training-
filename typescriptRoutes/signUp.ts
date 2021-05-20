@@ -1,18 +1,11 @@
 import * as Router from "koa-router";
-import routerHandler from "./routerHandler";
+import { routeHelper } from "./routerHandler";
 
 interface SignUpRouter {
     signUpHere: () => {};
 }
 
 class SignUp implements SignUpRouter {
-    public static instance: SignUp | undefined = undefined;
-
-    public static getInstance(): SignUp {
-        if (this.instance !== undefined) return this.instance;
-        this.instance = new SignUp();
-        return this.instance;
-    }
     constructor() {}
 
     signUpHere = () => {
@@ -33,8 +26,5 @@ const routes: { url: string; methods: methods[]; route: Function }[] = [
         route: signUpInstance.signUpHere,
     },
 ];
-for (let item of routes) {
-    const { url, methods, route } = item;
-    router.register(url, methods, routerHandler(route));
-}
+routeHelper(routes, router);
 export default router;

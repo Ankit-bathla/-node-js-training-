@@ -1,6 +1,6 @@
 import { DefaultState, DefaultContext, ParameterizedContext } from "koa";
 import * as Router from "koa-router";
-import routerHandler from "./routerHandler";
+import { routeHelper } from "./routerHandler";
 interface ToDoAppRouter {
     getTodoList: (
         ctx: ParameterizedContext<DefaultState, DefaultContext>
@@ -15,13 +15,6 @@ interface ToDoAppRouter {
 let list: Array<{ name: string; id: number }> = [];
 
 class TodoApp implements ToDoAppRouter {
-    public static instance: TodoApp | undefined = undefined;
-    public static getInstance(): TodoApp {
-        if (this.instance !== undefined) return this.instance;
-        this.instance = new TodoApp();
-        return this.instance;
-    }
-
     constructor() {}
     getTodoList = async (
         ctx: ParameterizedContext<DefaultState, DefaultContext>
@@ -72,8 +65,5 @@ const routes: { url: string; methods: methods[]; route: Function }[] = [
         route: toDoAppInstance.deleteTodoItem,
     },
 ];
-for (let item of routes) {
-    const { url, methods, route } = item;
-    router.register(url, methods, routerHandler(route));
-}
+routeHelper(routes, router);
 export default router;

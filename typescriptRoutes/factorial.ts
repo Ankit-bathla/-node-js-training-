@@ -1,5 +1,5 @@
 import * as Router from "koa-router";
-import routerHandler from "./routerHandler";
+import { routeHelper } from "./routerHandler";
 import { DefaultState, DefaultContext, ParameterizedContext } from "koa";
 
 interface INumFactorial {
@@ -113,9 +113,5 @@ const routes: { url: string; methods: methods[]; route: Function }[] = [
     },
 ];
 
-for (let item of routes) {
-    const { url, methods, route } = item;
-    router.register(url, methods, routerHandler(route));
-}
-
+routeHelper(routes, router);
 export default router;

@@ -1,6 +1,6 @@
 import { DefaultState, DefaultContext, ParameterizedContext } from "koa";
 import * as Router from "koa-router";
-import routerHandler from "./routerHandler";
+import { routeHelper } from "./routerHandler";
 
 interface taskOneRouter {
     getWorld: () => {};
@@ -14,12 +14,6 @@ interface taskOneRouter {
 }
 
 class TaskOne implements taskOneRouter {
-    public static instance: TaskOne | undefined = undefined;
-    public static getInstance(): TaskOne {
-        if (this.instance !== undefined) return this.instance;
-        this.instance = new TaskOne();
-        return this.instance;
-    }
     constructor() {}
 
     getWorld = () => {
@@ -71,8 +65,6 @@ const routes: { url: string; methods: methods[]; route: Function }[] = [
         route: taskOneInstance.getError,
     },
 ];
-for (let item of routes) {
-    const { url, methods, route } = item;
-    router.register(url, methods, routerHandler(route));
-}
+
+routeHelper(routes, router);
 export default router;
