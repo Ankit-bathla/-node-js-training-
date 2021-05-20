@@ -15,6 +15,12 @@ interface ToDoAppRouter {
 let list: Array<{ name: string; id: number }> = [];
 
 class TodoApp implements ToDoAppRouter {
+    public static instance: TodoApp | undefined = undefined;
+    public static getInstance(): TodoApp {
+        if (this.instance !== undefined) return this.instance;
+        this.instance = new TodoApp();
+        return this.instance;
+    }
     constructor() {}
     getTodoList = async (
         ctx: ParameterizedContext<DefaultState, DefaultContext>
@@ -45,7 +51,7 @@ class TodoApp implements ToDoAppRouter {
 }
 const router = new Router();
 
-const toDoAppInstance = new TodoApp();
+const toDoAppInstance = TodoApp.getInstance();
 
 type methods = "GET" | "POST";
 const routes: { url: string; methods: methods[]; route: Function }[] = [

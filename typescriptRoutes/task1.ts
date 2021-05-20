@@ -14,6 +14,12 @@ interface taskOneRouter {
 }
 
 class TaskOne implements taskOneRouter {
+    public static instance: TaskOne | undefined = undefined;
+    public static getInstance(): TaskOne {
+        if (this.instance !== undefined) return this.instance;
+        this.instance = new TaskOne();
+        return this.instance;
+    }
     constructor() {}
 
     getWorld = () => {
@@ -40,7 +46,7 @@ class TaskOne implements taskOneRouter {
 }
 
 const router = new Router();
-const taskOneInstance = new TaskOne();
+const taskOneInstance = TaskOne.getInstance();
 type methods = "GET";
 
 const routes: { url: string; methods: methods[]; route: Function }[] = [

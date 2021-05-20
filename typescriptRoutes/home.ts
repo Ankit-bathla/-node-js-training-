@@ -5,6 +5,12 @@ interface HomeRouter {
 }
 
 class Home implements HomeRouter {
+    public static instance: Home | undefined = undefined;
+    public static getInstance(): Home {
+        if (this.instance !== undefined) return this.instance;
+        this.instance = new Home();
+        return this.instance;
+    }
     constructor() {}
 
     getHello = () => {
@@ -15,7 +21,7 @@ class Home implements HomeRouter {
 }
 const router = new Router();
 
-const homeInstance = new Home();
+const homeInstance = Home.getInstance();
 
 type methods = "GET";
 

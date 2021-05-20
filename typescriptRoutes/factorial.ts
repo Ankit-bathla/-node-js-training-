@@ -13,6 +13,12 @@ interface IFactRouter {
     getVal: (ctx: ParameterizedContext<DefaultState, DefaultContext>) => {};
 }
 class Memo implements ICalculateFactorial {
+    public static instance: Memo | undefined = undefined;
+    public static getInstance(num: number): Memo {
+        if (this.instance !== undefined) return this.instance;
+        this.instance = new Memo(num);
+        return this.instance;
+    }
     private factArray: Array<number> = [];
     constructor(num: number) {
         let result = 1;
@@ -28,6 +34,12 @@ class Memo implements ICalculateFactorial {
 }
 
 class Recursive implements ICalculateFactorial {
+    public static instance: Recursive | undefined = undefined;
+    public static getInstance(num: number): Recursive {
+        if (this.instance !== undefined) return this.instance;
+        this.instance = new Recursive();
+        return this.instance;
+    }
     calcFactorial(num: number) {
         if (num === 1 || num === 0) {
             return num;
@@ -37,6 +49,12 @@ class Recursive implements ICalculateFactorial {
 }
 
 class NumFactorial implements INumFactorial {
+    public static instance: NumFactorial | undefined = undefined;
+    public static getInstance(val: ICalculateFactorial): NumFactorial {
+        if (this.instance !== undefined) return this.instance;
+        this.instance = new NumFactorial(val);
+        return this.instance;
+    }
     private fact: ICalculateFactorial;
 
     constructor(val: ICalculateFactorial) {
@@ -48,6 +66,12 @@ class NumFactorial implements INumFactorial {
 }
 
 class FactRouter implements IFactRouter {
+    public static instance: FactRouter | undefined = undefined;
+    public static getInstance(): FactRouter {
+        if (this.instance !== undefined) return this.instance;
+        this.instance = new FactRouter();
+        return this.instance;
+    }
     getVal = (ctx: ParameterizedContext<DefaultState, DefaultContext>) => {
         const num: number = parseInt(ctx.params.number);
         if (num < 0 || num > 100000000) {
@@ -70,11 +94,15 @@ class FactRouter implements IFactRouter {
             let finishTime: number;
             if (method === "fast") {
                 startTime = Date.now();
-                result = new NumFactorial(new Memo(num)).getFactorial(num);
+                result = NumFactorial.getInstance(
+                    Memo.getInstance(num)
+                ).getFactorial(num);
                 finishTime = Date.now();
             } else if (method === "slow") {
                 startTime = Date.now();
-                result = new NumFactorial(new Recursive()).getFactorial(num);
+                result = NumFactorial.getInstance(
+                    Recursive.getInstance(num)
+                ).getFactorial(num);
                 finishTime = Date.now();
             } else {
                 let reason = " invalid input Request : should be fast or slow";
@@ -102,7 +130,7 @@ class FactRouter implements IFactRouter {
     };
 }
 const router = new Router();
-const FactRouterInstance = new FactRouter();
+const FactRouterInstance = FactRouter.getInstance();
 
 type methods = "GET";
 const routes: { url: string; methods: methods[]; route: Function }[] = [

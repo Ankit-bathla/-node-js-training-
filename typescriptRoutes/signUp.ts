@@ -6,6 +6,12 @@ interface SignUpRouter {
 }
 
 class SignUp implements SignUpRouter {
+    public static instance: SignUp | undefined = undefined;
+    public static getInstance(): SignUp {
+        if (this.instance !== undefined) return this.instance;
+        this.instance = new SignUp();
+        return this.instance;
+    }
     constructor() {}
 
     signUpHere = () => {
@@ -15,7 +21,7 @@ class SignUp implements SignUpRouter {
 
 const router = new Router();
 
-const signUpInstance = new SignUp();
+const signUpInstance = SignUp.getInstance();
 
 type methods = "GET";
 
