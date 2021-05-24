@@ -1,15 +1,11 @@
-import { DefaultState, DefaultContext, ParameterizedContext } from "koa";
 import * as Router from "koa-router";
+import { KoaContext } from "../types";
 import { routeHelper } from "./routerHandler";
 
 interface taskOneRouter {
     getWorld: () => {};
-    getQueryName: (
-        ctx: ParameterizedContext<DefaultState, DefaultContext>
-    ) => {};
-    getParamsName: (
-        ctx: ParameterizedContext<DefaultState, DefaultContext>
-    ) => {};
+    getQueryName: (ctx: KoaContext) => {};
+    getParamsName: (ctx: KoaContext) => {};
     getError: () => {};
 }
 
@@ -25,14 +21,10 @@ class TaskOne implements taskOneRouter {
     getWorld = () => {
         return "world";
     };
-    getQueryName = (
-        ctx: ParameterizedContext<DefaultState, DefaultContext>
-    ) => {
+    getQueryName = (ctx: KoaContext) => {
         return ctx.query.person;
     };
-    getParamsName = (
-        ctx: ParameterizedContext<DefaultState, DefaultContext>
-    ) => {
+    getParamsName = (ctx: KoaContext) => {
         return `hi ${ctx.params.name}`;
     };
     getError = () => {

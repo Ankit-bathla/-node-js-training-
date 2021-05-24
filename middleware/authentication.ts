@@ -1,5 +1,4 @@
-import { DefaultState, DefaultContext, ParameterizedContext } from "koa";
-
+import { KoaContext } from "../types";
 interface Error {
     status?: number;
     message?: string;
@@ -7,10 +6,7 @@ interface Error {
 }
 
 interface IAuthentication {
-    handleAuth: (
-        ctx: ParameterizedContext<DefaultState, DefaultContext>,
-        next: () => Promise<any>
-    ) => void;
+    handleAuth: (ctx: KoaContext, next: () => Promise<any>) => void;
 }
 
 class Auth implements IAuthentication {
@@ -22,10 +18,7 @@ class Auth implements IAuthentication {
     }
     constructor() {}
 
-    handleAuth = async (
-        ctx: ParameterizedContext<DefaultState, DefaultContext>,
-        next: () => Promise<any>
-    ) => {
+    handleAuth = async (ctx: KoaContext, next: () => Promise<any>) => {
         if (
             ctx.path === "/" ||
             ctx.path === "/signUp" ||

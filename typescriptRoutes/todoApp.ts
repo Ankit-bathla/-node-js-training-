@@ -1,16 +1,10 @@
-import { DefaultState, DefaultContext, ParameterizedContext } from "koa";
 import * as Router from "koa-router";
 import { routeHelper } from "./routerHandler";
+import { KoaContext } from "../types";
 interface ToDoAppRouter {
-    getTodoList: (
-        ctx: ParameterizedContext<DefaultState, DefaultContext>
-    ) => {};
-    postTodoItem: (
-        ctx: ParameterizedContext<DefaultState, DefaultContext>
-    ) => void;
-    deleteTodoItem: (
-        ctx: ParameterizedContext<DefaultState, DefaultContext>
-    ) => void;
+    getTodoList: (ctx: KoaContext) => {};
+    postTodoItem: (ctx: KoaContext) => void;
+    deleteTodoItem: (ctx: KoaContext) => void;
 }
 let list: Array<{ name: string; id: number }> = [];
 
@@ -22,16 +16,12 @@ class TodoApp implements ToDoAppRouter {
         return this.instance;
     }
     constructor() {}
-    getTodoList = async (
-        ctx: ParameterizedContext<DefaultState, DefaultContext>
-    ) => {
+    getTodoList = async (ctx: KoaContext) => {
         return await ctx.render("todoApp", {
             list: list,
         });
     };
-    postTodoItem = (
-        ctx: ParameterizedContext<DefaultState, DefaultContext>
-    ) => {
+    postTodoItem = (ctx: KoaContext) => {
         const item: string = ctx.request.body.new;
         const id: number = Date.now();
         const todoItem = {
@@ -42,9 +32,7 @@ class TodoApp implements ToDoAppRouter {
             list.push(todoItem);
         }
     };
-    deleteTodoItem = (
-        ctx: ParameterizedContext<DefaultState, DefaultContext>
-    ) => {
+    deleteTodoItem = (ctx: KoaContext) => {
         const id: any = ctx.request.query.id;
         list = list.filter((item) => item.id !== parseInt(id));
     };

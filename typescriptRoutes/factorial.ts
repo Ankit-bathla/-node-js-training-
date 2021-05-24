@@ -1,6 +1,6 @@
 import * as Router from "koa-router";
 import { routeHelper } from "./routerHandler";
-import { DefaultState, DefaultContext, ParameterizedContext } from "koa";
+import { KoaContext } from "../types";
 
 interface INumFactorial {
     getFactorial(num: number): number;
@@ -10,7 +10,7 @@ interface ICalculateFactorial {
 }
 
 interface IFactRouter {
-    getVal: (ctx: ParameterizedContext<DefaultState, DefaultContext>) => {};
+    getVal: (ctx: KoaContext) => {};
 }
 class Memo implements ICalculateFactorial {
     public static instance: Memo | undefined = undefined;
@@ -72,7 +72,7 @@ class FactRouter implements IFactRouter {
         this.instance = new FactRouter();
         return this.instance;
     }
-    getVal = (ctx: ParameterizedContext<DefaultState, DefaultContext>) => {
+    getVal = (ctx: KoaContext) => {
         const num: number = parseInt(ctx.params.number);
         if (num < 0 || num > 100000000) {
             let reason = " invalid input number : should be btw 0 and 10^8";

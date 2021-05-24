@@ -1,10 +1,6 @@
-import { DefaultState, DefaultContext, ParameterizedContext } from "koa";
-
+import { KoaContext } from "../types";
 interface IErrorHandler {
-    handleError: (
-        ctx: ParameterizedContext<DefaultState, DefaultContext>,
-        next: () => Promise<any>
-    ) => void;
+    handleError: (ctx: KoaContext, next: () => Promise<any>) => void;
 }
 
 class ErrorHandler implements IErrorHandler {
@@ -17,10 +13,7 @@ class ErrorHandler implements IErrorHandler {
     }
     constructor() {}
 
-    handleError = async (
-        ctx: ParameterizedContext<DefaultState, DefaultContext>,
-        next: () => Promise<any>
-    ) => {
+    handleError = async (ctx: KoaContext, next: () => Promise<any>) => {
         try {
             await next();
         } catch (err) {

@@ -1,13 +1,10 @@
-import { DefaultState, DefaultContext, ParameterizedContext } from "koa";
 import * as Router from "koa-router";
+import { KoaContext } from "../types";
 
 type methods = "GET" | "POST";
 
 function routerHandler(route: Function) {
-    return async (
-        ctx: ParameterizedContext<DefaultState, DefaultContext>,
-        next: () => Promise<any>
-    ) => {
+    return async (ctx: KoaContext, next: () => Promise<any>) => {
         try {
             await next();
             const response = await route(ctx);

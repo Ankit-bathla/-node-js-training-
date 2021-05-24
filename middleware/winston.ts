@@ -1,5 +1,5 @@
 import * as winstonLog from "winston";
-import { DefaultState, DefaultContext, ParameterizedContext } from "koa";
+import { KoaContext } from "../types";
 
 enum LogLevel {
     Debug = "debug",
@@ -53,7 +53,7 @@ class WinstonLogger implements IWinstonLogger {
 const createWinstonLogger = () => WinstonLogger.getInstance();
 
 const inBoundRequestLogger = async (
-    ctx: ParameterizedContext<DefaultState, DefaultContext>,
+    ctx: KoaContext,
     next: () => Promise<any>
 ) => {
     const startTimeStamp = Date.now();
