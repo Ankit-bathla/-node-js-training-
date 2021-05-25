@@ -5,7 +5,7 @@ export class HttpClient implements IHttpClient {
     public static instance: HttpClient | undefined = undefined;
     public static getInstance(): HttpClient {
         if (this.instance !== undefined) return this.instance;
-        this.instance = new HttpClient(axios.create());
+        this.instance = new HttpClient(axios);
         return this.instance;
     }
 
@@ -16,7 +16,6 @@ export class HttpClient implements IHttpClient {
             any,
             AxiosResponse<T>
         >(url, { ...config });
-
         return response;
     }
     async post<T>(url: string, data: any, config: {}): Promise<T> {
