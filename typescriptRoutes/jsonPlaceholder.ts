@@ -29,50 +29,89 @@ export class JsonPlaceHolder implements IJsonPlaceHolder {
         const userId = ctx?.query?.userId;
         const title = ctx?.query?.title;
         const body = ctx?.query?.body;
-
-        const data = {
-            userId: userId,
-            title: title,
-            body: body,
-        };
-        const request = await this.http.post(
-            "https://jsonplaceholder.typicode.com/posts",
-            data,
-            {}
-        );
-        return request.config.data;
+        if (userId !== undefined && title !== undefined && body !== undefined) {
+            const data = {
+                userId: userId,
+                title: title,
+                body: body,
+            };
+            const request = await this.http.post(
+                "https://jsonplaceholder.typicode.com/posts",
+                data,
+                {}
+            );
+            return request.config.data;
+        } else {
+            ctx.throw(422, {
+                body: {
+                    error: {
+                        status: 422,
+                        message: " query param missing in post request",
+                    },
+                },
+            });
+        }
     };
     handlePutRequest = async (ctx: KoaContext) => {
-        const userId = ctx?.request?.query?.userId;
+        const userId = ctx?.query?.userId;
         const title = ctx?.query?.title;
         const body = ctx?.query?.body;
-        let id: any = ctx?.request?.query?.id;
+        let id: any = ctx?.query?.id;
         id = parseInt(id);
-        const data = {
-            userId: userId,
-            title: title,
-            body: body,
-            id: parseInt(id),
-        };
-        const request = await this.http.put(
-            `https://jsonplaceholder.typicode.com/posts/${id}`,
-            data,
-            {}
-        );
-        return request.config.data;
+
+        if (
+            userId !== undefined &&
+            title !== undefined &&
+            body !== undefined &&
+            id !== undefined
+        ) {
+            const data = {
+                userId: userId,
+                title: title,
+                body: body,
+                id: parseInt(id),
+            };
+            const request = await this.http.put(
+                `https://jsonplaceholder.typicode.com/posts/${id}`,
+                data,
+                {}
+            );
+            return request.config.data;
+        } else {
+            ctx.throw(422, {
+                body: {
+                    error: {
+                        status: 422,
+                        message: " query param missing in put request",
+                    },
+                },
+            });
+        }
     };
 
     handleDeleteRequest = async (ctx: KoaContext) => {
         let id: any = ctx?.query?.id;
-        id = parseInt(id);
-        await this.http.delete(
-            `https://jsonplaceholder.typicode.com/posts/${id}`,
-            {}
-        );
-        return {
-            method: "delete",
-            message: "item deleted",
-        };
+
+        if (id !== undefined) {
+            id = parseInt(id);
+            await this.http.delete(
+                `https://jsonplaceholder.typicode.com/posts/${id}`,
+                {}
+            );
+            return {
+                method: "delete",
+                message: "item deleted",
+            };
+        } else {
+            ctx.throw(422, {
+                body: {
+                    error: {
+                        status: 422,
+                        message: " query param missing in delete request",
+                    },
+                },
+            });
+        }
     };
 }
 
