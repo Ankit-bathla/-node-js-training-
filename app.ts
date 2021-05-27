@@ -3,8 +3,7 @@ import ErrorHandler from "./middleware/errorHandler";
 import inBoundRequestLogger, { WinstonLogger } from "./middleware/winston";
 import auth from "./middleware/authentication";
 import * as bodyParser from "koa-bodyparser";
-import { AppContext, AppState } from "./interface";
-import { ParameterizedContext } from "koa";
+import { AppContext, AppState, AppMiddlewareContext } from "./interface";
 import * as json from "koa-json";
 import * as serve from "koa-static";
 import * as path from "path";
@@ -31,22 +30,17 @@ render(app, {
 for (let routes of getRoutes) {
     app.use(routes.routes()).use(routes.allowedMethods());
 }
-app.use(
-    async (
-        ctx: ParameterizedContext<AppState, AppContext>,
-        next: () => Promise<any>
-    ) => {
+app.use(async (ctx: AppMiddlewareContext, next: () => Promise<any>) => {
+    if (ctx.path === "/error") {
         ctx.logger({
             level: LogLevel.Error,
             message: "custom error of taskOne",
         }); // testing that winston logger has been added to AppContext
-        if (ctx.path === "/error") {
-            ctx.throw("custom error");
-        } else {
-            await next();
-        }
+        ctx.throw("custom error");
+    } else {
+        await next();
     }
-);
+});
 const server = app.listen(3002).on("listening", () => {
     console.log("typescript server started");
 });
