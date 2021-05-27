@@ -8,11 +8,7 @@ import * as json from "koa-json";
 import * as serve from "koa-static";
 import * as path from "path";
 import * as render from "koa-ejs";
-import home from "./typescriptRoutes/home";
-import signUp from "./typescriptRoutes/signUp";
-import taskOne from "./typescriptRoutes/task1";
-import todoApp from "./typescriptRoutes/todoApp";
-import factorial from "./typescriptRoutes/factorial";
+import { getRoutes } from "./typescriptRoutes/index";
 const app: Koa<DefaultContext, DefaultState> = new Koa();
 app.use(bodyParser());
 app.use(json());
@@ -25,10 +21,9 @@ render(app, {
     root: path.join(__dirname, "views"),
     layout: "layout",
 });
-app.use(factorial.routes()).use(factorial.allowedMethods());
-app.use(home.routes()).use(home.allowedMethods());
-app.use(signUp.routes()).use(signUp.allowedMethods());
-app.use(taskOne.routes()).use(taskOne.allowedMethods());
+for (let routes of getRoutes) {
+    app.use(routes.routes()).use(routes.allowedMethods());
+}
 app.use(
     async (
         ctx: ParameterizedContext<DefaultState, DefaultContext>,
@@ -41,7 +36,6 @@ app.use(
         }
     }
 );
-app.use(todoApp.routes()).use(todoApp.allowedMethods());
 const server = app.listen(3002).on("listening", () => {
     console.log("typescript server started");
 });

@@ -1,7 +1,6 @@
 import * as Router from "koa-router";
 import { KoaContext } from "../types";
-
-type methods = "GET" | "POST";
+import { methods } from "../types";
 
 function routerHandler(route: Function) {
     return async (ctx: KoaContext, next: () => Promise<any>) => {
