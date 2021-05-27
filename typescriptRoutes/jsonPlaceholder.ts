@@ -1,5 +1,5 @@
 import * as Router from "koa-router";
-import { KoaContext } from "../types";
+import { AppRouterContext } from "../interface";
 import { routeHelper } from "./routerHandler";
 import { IHttpClient } from "../interface";
 import { HttpClient } from "../middleware/httpClient";
@@ -7,9 +7,9 @@ import { methods } from "../types";
 
 interface IJsonPlaceHolder {
     handleGetRequest: () => {};
-    handlePostRequest: (ctx: KoaContext) => {};
-    handlePutRequest?: (ctx: KoaContext) => {};
-    handleDeleteRequest?: (ctx: KoaContext) => {};
+    handlePostRequest: (ctx: AppRouterContext) => {};
+    handlePutRequest?: (ctx: AppRouterContext) => {};
+    handleDeleteRequest?: (ctx: AppRouterContext) => {};
 }
 
 export class JsonPlaceHolder implements IJsonPlaceHolder {
@@ -25,10 +25,14 @@ export class JsonPlaceHolder implements IJsonPlaceHolder {
         );
         return res.data;
     };
-    handlePostRequest = async (ctx: KoaContext) => {
+    handlePostRequest = async (ctx: AppRouterContext) => {
         const userId = ctx?.query?.userId;
         const title = ctx?.query?.title;
         const body = ctx?.query?.body;
+        ctx.logger({
+            level: "info",
+            message: "successFully add customize Context in routeContext ",
+        }); // checking customize AppRouterContext
         if (userId !== undefined && title !== undefined && body !== undefined) {
             const data = {
                 userId: userId,
@@ -52,7 +56,7 @@ export class JsonPlaceHolder implements IJsonPlaceHolder {
             });
         }
     };
-    handlePutRequest = async (ctx: KoaContext) => {
+    handlePutRequest = async (ctx: AppRouterContext) => {
         const userId = ctx?.query?.userId;
         const title = ctx?.query?.title;
         const body = ctx?.query?.body;
@@ -87,7 +91,7 @@ export class JsonPlaceHolder implements IJsonPlaceHolder {
         }
     };
 
-    handleDeleteRequest = async (ctx: KoaContext) => {
+    handleDeleteRequest = async (ctx: AppRouterContext) => {
         let id: any = ctx?.query?.id;
 
         if (id !== undefined) {

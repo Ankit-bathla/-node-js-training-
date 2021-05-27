@@ -1,4 +1,4 @@
-import { KoaContext } from "../types";
+import { AppRouterContext } from "../interface";
 import { JsonPlaceHolder } from "../typescriptRoutes/jsonPlaceholder";
 import { MockHttpClient } from "../utils/MockHttp";
 
@@ -48,7 +48,8 @@ describe("Json PlaceHolder test ", () => {
                 body: "bathla",
             },
             throw: jest.fn(() => error),
-        } as unknown as KoaContext;
+            logger: jest.fn(),
+        } as unknown as AppRouterContext;
 
         const response = await jsonPlaceholderInstanceMock.handlePostRequest(
             ctx
@@ -76,7 +77,8 @@ describe("Json PlaceHolder test ", () => {
         };
         const ctx = {
             throw: jest.fn(() => error),
-        } as unknown as KoaContext;
+            logger: jest.fn(),
+        } as unknown as AppRouterContext;
         await jsonPlaceholderInstanceMock.handlePostRequest(ctx);
         expect(ctx.throw).toHaveBeenCalledTimes(1);
     });
@@ -97,7 +99,8 @@ describe("Json PlaceHolder test ", () => {
                 title: "ankit",
                 body: " bathla",
             },
-        } as unknown as KoaContext;
+            logger: jest.fn(),
+        } as unknown as AppRouterContext;
         const MockHttp = new MockHttpClient();
         const jsonPlaceholderInstanceMock = new JsonPlaceHolder(MockHttp);
         MockHttp.setResponse({}, config);
@@ -130,7 +133,8 @@ describe("Json PlaceHolder test ", () => {
         };
         const ctx = {
             throw: jest.fn(() => error),
-        } as unknown as KoaContext;
+            logger: jest.fn(),
+        } as unknown as AppRouterContext;
         const MockHttp = new MockHttpClient();
         const jsonPlaceholderInstanceMock = new JsonPlaceHolder(MockHttp);
         MockHttp.setResponse({}, config);
@@ -142,7 +146,8 @@ describe("Json PlaceHolder test ", () => {
             query: {
                 id: 1,
             },
-        } as unknown as KoaContext;
+            logger: jest.fn(),
+        } as unknown as AppRouterContext;
         const MockHttp = new MockHttpClient();
         const jsonPlaceholderInstanceMock = new JsonPlaceHolder(MockHttp);
         const response = await jsonPlaceholderInstanceMock.handleDeleteRequest(
@@ -165,7 +170,8 @@ describe("Json PlaceHolder test ", () => {
                 id: undefined,
             },
             throw: jest.fn(() => error),
-        } as unknown as KoaContext;
+            logger: jest.fn(),
+        } as unknown as AppRouterContext;
         const MockHttp = new MockHttpClient();
         const jsonPlaceholderInstanceMock = new JsonPlaceHolder(MockHttp);
         await jsonPlaceholderInstanceMock.handleDeleteRequest(ctx);

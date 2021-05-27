@@ -1,5 +1,5 @@
 import * as winstonLog from "winston";
-import { KoaContext } from "../types";
+import { AppMiddlewareContext } from "../interface";
 
 enum LogLevel {
     Debug = "debug",
@@ -21,7 +21,7 @@ interface IWinstonLogger {
     log(LogMessage: LoggerMessage): void;
 }
 
-class WinstonLogger implements IWinstonLogger {
+export class WinstonLogger implements IWinstonLogger {
     public logger: winstonLog.Logger;
 
     public static instance: WinstonLogger | undefined = undefined;
@@ -53,7 +53,7 @@ class WinstonLogger implements IWinstonLogger {
 const createWinstonLogger = () => WinstonLogger.getInstance();
 
 const inBoundRequestLogger = async (
-    ctx: KoaContext,
+    ctx: AppMiddlewareContext,
     next: () => Promise<any>
 ) => {
     const startTimeStamp = Date.now();

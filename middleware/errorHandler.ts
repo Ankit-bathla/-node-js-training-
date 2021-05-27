@@ -1,6 +1,6 @@
-import { KoaContext } from "../types";
+import { AppMiddlewareContext } from "../interface";
 interface IErrorHandler {
-    handleError: (ctx: KoaContext, next: () => Promise<any>) => void;
+    handleError: (ctx: AppMiddlewareContext, next: () => Promise<any>) => void;
 }
 
 class ErrorHandler implements IErrorHandler {
@@ -13,7 +13,10 @@ class ErrorHandler implements IErrorHandler {
     }
     constructor() {}
 
-    handleError = async (ctx: KoaContext, next: () => Promise<any>) => {
+    handleError = async (
+        ctx: AppMiddlewareContext,
+        next: () => Promise<any>
+    ) => {
         try {
             await next();
         } catch (err) {

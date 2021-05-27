@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { IHttpClient } from "../interface";
 
 export class MockHttpClient implements IHttpClient {
