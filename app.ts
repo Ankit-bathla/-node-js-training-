@@ -10,6 +10,7 @@ import * as serve from "koa-static";
 import * as path from "path";
 import * as render from "koa-ejs";
 import { getRoutes } from "./typescriptRoutes/index";
+import { LogLevel } from "./types";
 const app: Koa<AppState, AppContext> = new Koa<AppState, AppContext>();
 app.context.logger = function (LogMessage: any) {
     const createWinstonLogger = () => WinstonLogger.getInstance(); // adding winston logger to context
@@ -35,7 +36,10 @@ app.use(
         ctx: ParameterizedContext<AppState, AppContext>,
         next: () => Promise<any>
     ) => {
-        ctx.logger({ level: "error", message: "custom error of taskOne" }); // testing that winston logger has been added to AppContext
+        ctx.logger({
+            level: LogLevel.Error,
+            message: "custom error of taskOne",
+        }); // testing that winston logger has been added to AppContext
         if (ctx.path === "/error") {
             ctx.throw("custom error");
         } else {

@@ -1,13 +1,6 @@
 import * as winstonLog from "winston";
 import { AppMiddlewareContext } from "../interface";
-
-enum LogLevel {
-    Debug = "debug",
-    Verbose = "notice",
-    Info = "info",
-    Warn = "warning",
-    Error = "error",
-}
+import { LogLevel } from "../types";
 interface LoggerMessage {
     startTimeStamp: number;
     duration: number;
