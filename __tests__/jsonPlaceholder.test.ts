@@ -83,6 +83,7 @@ describe("Json PlaceHolder test ", () => {
     test("should be able to check the handlePutRequest", async () => {
         const config = {
             data: {
+                id: 1,
                 userId: 1,
                 title: "ankit",
                 body: "bathla",
@@ -103,7 +104,12 @@ describe("Json PlaceHolder test ", () => {
         const response = await jsonPlaceholderInstanceMock.handlePutRequest(
             ctx
         );
-        expect(response).toEqual({ userId: 1, title: "ankit", body: "bathla" });
+        expect(response).toEqual({
+            userId: 1,
+            title: "ankit",
+            body: "bathla",
+            id: 1,
+        });
     });
 
     test("should be able to check the handlePutRequest and throw error if query is undefined", async () => {

@@ -57,8 +57,6 @@ export class JsonPlaceHolder implements IJsonPlaceHolder {
         const title = ctx?.query?.title;
         const body = ctx?.query?.body;
         let id: any = ctx?.query?.id;
-        id = parseInt(id);
-
         if (
             userId !== undefined &&
             title !== undefined &&
