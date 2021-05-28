@@ -34,7 +34,7 @@ app.use(async (ctx: AppMiddlewareContext, next: () => Promise<any>) => {
     if (ctx.path === "/error") {
         ctx.logger({
             level: LogLevel.Error,
-            message: "custom error of taskOne",
+            message: "=====custom error of taskOne=====",
         }); // testing that winston logger has been added to AppContext
         ctx.throw("custom error");
     } else {

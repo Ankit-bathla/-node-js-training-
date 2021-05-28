@@ -32,7 +32,7 @@ export class WinstonLogger implements IWinstonLogger {
                     filename: "info.txt",
                     dirname: "log",
                 }),
-                new parameter.transports.Console(),
+                // new parameter.transports.Console(),
             ],
         });
     }

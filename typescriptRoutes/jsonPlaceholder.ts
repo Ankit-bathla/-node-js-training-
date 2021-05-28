@@ -3,10 +3,11 @@ import { AppRouterContext } from "../interface";
 import { routeHelper } from "./routerHandler";
 import { IHttpClient } from "../interface";
 import { HttpClient } from "../middleware/httpClient";
-import { methods } from "../types";
+import { methods, LogLevel } from "../types";
+import { createTextChangeRange } from "typescript";
 
 interface IJsonPlaceHolder {
-    handleGetRequest: () => {};
+    handleGetRequest: (ctx: AppRouterContext) => {};
     handlePostRequest: (ctx: AppRouterContext) => {};
     handlePutRequest?: (ctx: AppRouterContext) => {};
     handleDeleteRequest?: (ctx: AppRouterContext) => {};
@@ -18,21 +19,25 @@ export class JsonPlaceHolder implements IJsonPlaceHolder {
         this.http = httpClient;
     }
 
-    handleGetRequest = async () => {
+    handleGetRequest = async (ctx: AppRouterContext) => {
         const res = await this.http.get(
             "https://jsonplaceholder.typicode.com/posts",
             {}
         );
+        console.log(res);
+        if (res.data === undefined) {
+            ctx.logger({
+                level: LogLevel.Error,
+                message:
+                    "something went wrong during get call of jsonPlaceholder Api",
+            });
+        }
         return res.data;
     };
     handlePostRequest = async (ctx: AppRouterContext) => {
         const userId = ctx?.query?.userId;
         const title = ctx?.query?.title;
         const body = ctx?.query?.body;
-        ctx.logger({
-            level: "info",
-            message: "successFully add customize Context in routeContext ",
-        }); // checking customize AppRouterContext
         if (userId !== undefined && title !== undefined && body !== undefined) {
             const data = {
                 userId: userId,
@@ -44,7 +49,14 @@ export class JsonPlaceHolder implements IJsonPlaceHolder {
                 data,
                 {}
             );
-            return request.config.data;
+            if (request === undefined || request?.config === undefined) {
+                ctx.logger({
+                    level: LogLevel.Error,
+                    message:
+                        "something went wrong  during post call for jsonPlaceholder Api",
+                });
+            }
+            return request?.config?.data;
         } else {
             ctx.throw(422, {
                 body: {
@@ -78,7 +90,14 @@ export class JsonPlaceHolder implements IJsonPlaceHolder {
                 data,
                 {}
             );
-            return request.config.data;
+            if (request === undefined || request?.config === undefined) {
+                ctx.logger({
+                    level: LogLevel.Error,
+                    message:
+                        "something went wrong  during post call for jsonPlaceholder Api",
+                });
+            }
+            return request?.config?.data;
         } else {
             ctx.throw(422, {
                 body: {

@@ -10,7 +10,7 @@ export class MockHttpClient implements IHttpClient {
         headers: {},
     };
 
-    constructor(data: any = {}) {
+    constructor(data: any = undefined) {
         this.response = {
             ...this.response,
             data,

@@ -21,4 +21,6 @@ export interface AppContext extends DefaultContext {
     logger?: Function;
 }
 
-export interface AppRouterContext extends RouterContext<AppState, AppContext> {}
+export interface AppRouterContext extends RouterContext<AppState, AppContext> {
+    state: AppState;
+}
