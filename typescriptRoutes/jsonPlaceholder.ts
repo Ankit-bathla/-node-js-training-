@@ -24,7 +24,6 @@ export class JsonPlaceHolder implements IJsonPlaceHolder {
             "https://jsonplaceholder.typicode.com/posts",
             {}
         );
-        console.log(res);
         if (res.data === undefined) {
             ctx.logger({
                 level: LogLevel.Error,
