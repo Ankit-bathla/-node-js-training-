@@ -1,6 +1,5 @@
-import * as Router from "koa-router";
-import { routeHelper } from "./routerHandler";
 import { AppRouterContext } from "../interface";
+import { RoutesArray } from "../types";
 interface ToDoAppRouter {
     getTodoList: (ctx: AppRouterContext) => {};
     postTodoItem: (ctx: AppRouterContext) => void;
@@ -37,12 +36,10 @@ class TodoApp implements ToDoAppRouter {
         list = list.filter((item) => item.id !== parseInt(id));
     };
 }
-const router = new Router();
 
 const toDoAppInstance = TodoApp.getInstance();
 
-type methods = "GET" | "POST";
-const routes: { url: string; methods: methods[]; route: Function }[] = [
+export const todoAppRoutes: RoutesArray = [
     {
         url: "/list",
         methods: ["GET"],
@@ -59,5 +56,3 @@ const routes: { url: string; methods: methods[]; route: Function }[] = [
         route: toDoAppInstance.deleteTodoItem,
     },
 ];
-routeHelper(routes, router);
-export default router;

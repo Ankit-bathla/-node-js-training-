@@ -1,5 +1,4 @@
-import * as Router from "koa-router";
-import { routeHelper } from "./routerHandler";
+import { RoutesArray } from "../types";
 interface HomeRouter {
     getHello: () => {};
 }
@@ -19,18 +18,15 @@ class Home implements HomeRouter {
         };
     };
 }
-const router = new Router();
 
 const homeInstance = Home.getInstance();
 
 type methods = "GET";
 
-const routes: { url: string; methods: methods[]; route: Function }[] = [
+export const homeRoutes: RoutesArray = [
     {
         url: "/",
         methods: ["GET"],
         route: homeInstance.getHello,
     },
 ];
-routeHelper(routes, router);
-export default router;

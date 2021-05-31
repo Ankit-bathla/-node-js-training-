@@ -1,6 +1,5 @@
-import * as Router from "koa-router";
-import { routeHelper } from "./routerHandler";
 import { AppRouterContext } from "../interface";
+import { RoutesArray } from "../types";
 
 interface taskOneRouter {
     getWorld: () => {};
@@ -37,11 +36,9 @@ class TaskOne implements taskOneRouter {
     };
 }
 
-const router = new Router();
 const taskOneInstance = TaskOne.getInstance();
-type methods = "GET";
 
-const routes: { url: string; methods: methods[]; route: Function }[] = [
+export const taskOneRoutes: RoutesArray = [
     {
         url: "/hello",
         methods: ["GET"],
@@ -63,6 +60,3 @@ const routes: { url: string; methods: methods[]; route: Function }[] = [
         route: taskOneInstance.getError,
     },
 ];
-
-routeHelper(routes, router);
-export default router;

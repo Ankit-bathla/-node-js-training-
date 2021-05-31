@@ -1,5 +1,4 @@
-import * as Router from "koa-router";
-import { routeHelper } from "./routerHandler";
+import { RoutesArray } from "../types";
 import { AppRouterContext } from "../interface";
 interface INumFactorial {
     getFactorial(num: number): number;
@@ -128,11 +127,10 @@ class FactRouter implements IFactRouter {
         }
     };
 }
-const router = new Router();
 const FactRouterInstance = FactRouter.getInstance();
 
 type methods = "GET";
-const routes: { url: string; methods: methods[]; route: Function }[] = [
+export const FactorialRoutes: RoutesArray = [
     {
         url: "/factorial/:number",
         methods: ["GET"],
@@ -140,5 +138,5 @@ const routes: { url: string; methods: methods[]; route: Function }[] = [
     },
 ];
 
-routeHelper(routes, router);
-export default router;
+// routeHelper(routes, router);
+// export default router;

@@ -11,3 +11,9 @@ export enum LogLevel {
     Warn = "warning",
     Error = "error",
 }
+
+export type RoutesArray = {
+    url: string;
+    methods: methods[];
+    route: Function;
+}[];

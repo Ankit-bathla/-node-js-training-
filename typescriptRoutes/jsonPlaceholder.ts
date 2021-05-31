@@ -1,10 +1,7 @@
-import * as Router from "koa-router";
 import { AppRouterContext } from "../interface";
-import { routeHelper } from "./routerHandler";
 import { IHttpClient } from "../interface";
 import { HttpClient } from "../middleware/httpClient";
-import { methods, LogLevel } from "../types";
-import { createTextChangeRange } from "typescript";
+import { LogLevel, RoutesArray } from "../types";
 
 interface IJsonPlaceHolder {
     handleGetRequest: (ctx: AppRouterContext) => {};
@@ -134,10 +131,8 @@ export class JsonPlaceHolder implements IJsonPlaceHolder {
         }
     };
 }
-
-const router = new Router();
 const jsonPlaceholderInstance = new JsonPlaceHolder(HttpClient.getInstance());
-const routes: { url: string; methods: methods[]; route: Function }[] = [
+export const JsonRoutes: RoutesArray = [
     {
         url: "/posts",
         methods: ["GET"],
@@ -159,6 +154,3 @@ const routes: { url: string; methods: methods[]; route: Function }[] = [
         route: jsonPlaceholderInstance.handleDeleteRequest,
     },
 ];
-
-routeHelper(routes, router);
-export default router;
