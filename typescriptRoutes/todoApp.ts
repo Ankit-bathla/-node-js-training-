@@ -1,10 +1,9 @@
-import * as Router from "koa-router";
-import { routeHelper } from "./routerHandler";
-import { KoaContext } from "../types";
+import { AppRouterContext } from "../interface";
+import { RoutesArray } from "../types";
 interface ToDoAppRouter {
-    getTodoList: (ctx: KoaContext) => {};
-    postTodoItem: (ctx: KoaContext) => void;
-    deleteTodoItem: (ctx: KoaContext) => void;
+    getTodoList: (ctx: AppRouterContext) => {};
+    postTodoItem: (ctx: AppRouterContext) => void;
+    deleteTodoItem: (ctx: AppRouterContext) => void;
 }
 let list: Array<{ name: string; id: number }> = [];
 
@@ -16,12 +15,12 @@ class TodoApp implements ToDoAppRouter {
         return this.instance;
     }
     constructor() {}
-    getTodoList = async (ctx: KoaContext) => {
+    getTodoList = async (ctx: AppRouterContext) => {
         return await ctx.render("todoApp", {
             list: list,
         });
     };
-    postTodoItem = (ctx: KoaContext) => {
+    postTodoItem = (ctx: AppRouterContext) => {
         const item: string = ctx.request.body.new;
         const id: number = Date.now();
         const todoItem = {
@@ -32,17 +31,15 @@ class TodoApp implements ToDoAppRouter {
             list.push(todoItem);
         }
     };
-    deleteTodoItem = (ctx: KoaContext) => {
+    deleteTodoItem = (ctx: AppRouterContext) => {
         const id: any = ctx.request.query.id;
         list = list.filter((item) => item.id !== parseInt(id));
     };
 }
-const router = new Router();
 
 const toDoAppInstance = TodoApp.getInstance();
 
-type methods = "GET" | "POST";
-const routes: { url: string; methods: methods[]; route: Function }[] = [
+export const todoAppRoutes: RoutesArray = [
     {
         url: "/list",
         methods: ["GET"],
@@ -59,5 +56,3 @@ const routes: { url: string; methods: methods[]; route: Function }[] = [
         route: toDoAppInstance.deleteTodoItem,
     },
 ];
-routeHelper(routes, router);
-export default router;

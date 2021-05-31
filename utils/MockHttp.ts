@@ -1,4 +1,4 @@
-import axios, { AxiosInstance, AxiosResponse } from "axios";
+import { AxiosResponse } from "axios";
 import { IHttpClient } from "../interface";
 
 export class MockHttpClient implements IHttpClient {
@@ -10,7 +10,7 @@ export class MockHttpClient implements IHttpClient {
         headers: {},
     };
 
-    constructor(data: any = {}) {
+    constructor(data: any = undefined) {
         this.response = {
             ...this.response,
             data,

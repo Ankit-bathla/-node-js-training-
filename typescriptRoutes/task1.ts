@@ -1,11 +1,10 @@
-import * as Router from "koa-router";
-import { KoaContext } from "../types";
-import { routeHelper } from "./routerHandler";
+import { AppRouterContext } from "../interface";
+import { RoutesArray } from "../types";
 
 interface taskOneRouter {
     getWorld: () => {};
-    getQueryName: (ctx: KoaContext) => {};
-    getParamsName: (ctx: KoaContext) => {};
+    getQueryName: (ctx: AppRouterContext) => {};
+    getParamsName: (ctx: AppRouterContext) => {};
     getError: () => {};
 }
 
@@ -21,10 +20,10 @@ class TaskOne implements taskOneRouter {
     getWorld = () => {
         return "world";
     };
-    getQueryName = (ctx: KoaContext) => {
+    getQueryName = (ctx: AppRouterContext) => {
         return ctx.query.person;
     };
-    getParamsName = (ctx: KoaContext) => {
+    getParamsName = (ctx: AppRouterContext) => {
         return `hi ${ctx.params.name}`;
     };
     getError = () => {
@@ -37,11 +36,9 @@ class TaskOne implements taskOneRouter {
     };
 }
 
-const router = new Router();
 const taskOneInstance = TaskOne.getInstance();
-type methods = "GET";
 
-const routes: { url: string; methods: methods[]; route: Function }[] = [
+export const taskOneRoutes: RoutesArray = [
     {
         url: "/hello",
         methods: ["GET"],
@@ -63,6 +60,3 @@ const routes: { url: string; methods: methods[]; route: Function }[] = [
         route: taskOneInstance.getError,
     },
 ];
-
-routeHelper(routes, router);
-export default router;

@@ -1,6 +1,4 @@
-import * as Router from "koa-router";
-import { routeHelper } from "./routerHandler";
-
+import { RoutesArray } from "../types";
 interface SignUpRouter {
     signUpHere: () => {};
 }
@@ -19,18 +17,12 @@ class SignUp implements SignUpRouter {
     };
 }
 
-const router = new Router();
-
 const signUpInstance = SignUp.getInstance();
 
-type methods = "GET";
-
-const routes: { url: string; methods: methods[]; route: Function }[] = [
+export const signUPRoutes: RoutesArray = [
     {
         url: "/signUp",
         methods: ["GET"],
         route: signUpInstance.signUpHere,
     },
 ];
-routeHelper(routes, router);
-export default router;

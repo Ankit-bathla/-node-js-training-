@@ -1,16 +1,26 @@
-import home from "./home";
-import signUp from "./signUp";
-import taskOne from "./task1";
-import factorial from "./factorial";
-import todoApp from "./todoApp";
-import jsonPlaceholder from "./jsonPlaceholder";
+import { homeRoutes } from "./home";
+import { signUPRoutes } from "./signUp";
+import { taskOneRoutes } from "./task1";
+import { FactorialRoutes } from "./factorial";
+import { todoAppRoutes } from "./todoApp";
+import { JsonRoutes } from "./jsonPlaceholder";
 import * as Router from "koa-router";
+import { RoutesArray } from "../types";
+import { routeHelper } from "./routerHandler";
 
-export const getRoutes: Array<Router> = [
-    home,
-    signUp,
-    taskOne,
-    todoApp,
-    factorial,
-    jsonPlaceholder,
+const router = new Router();
+
+const routerArray: Array<RoutesArray> = [
+    homeRoutes,
+    signUPRoutes,
+    taskOneRoutes,
+    FactorialRoutes,
+    todoAppRoutes,
+    JsonRoutes,
 ];
+
+for (let routes of routerArray) {
+    routeHelper(routes, router);
+}
+
+export { router };

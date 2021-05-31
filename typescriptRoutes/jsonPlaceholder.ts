@@ -1,15 +1,13 @@
-import * as Router from "koa-router";
-import { KoaContext } from "../types";
-import { routeHelper } from "./routerHandler";
+import { AppRouterContext } from "../interface";
 import { IHttpClient } from "../interface";
 import { HttpClient } from "../middleware/httpClient";
-import { methods } from "../types";
+import { LogLevel, RoutesArray } from "../types";
 
 interface IJsonPlaceHolder {
-    handleGetRequest: () => {};
-    handlePostRequest: (ctx: KoaContext) => {};
-    handlePutRequest?: (ctx: KoaContext) => {};
-    handleDeleteRequest?: (ctx: KoaContext) => {};
+    handleGetRequest: (ctx: AppRouterContext) => {};
+    handlePostRequest: (ctx: AppRouterContext) => {};
+    handlePutRequest?: (ctx: AppRouterContext) => {};
+    handleDeleteRequest?: (ctx: AppRouterContext) => {};
 }
 
 export class JsonPlaceHolder implements IJsonPlaceHolder {
@@ -18,14 +16,21 @@ export class JsonPlaceHolder implements IJsonPlaceHolder {
         this.http = httpClient;
     }
 
-    handleGetRequest = async () => {
+    handleGetRequest = async (ctx: AppRouterContext) => {
         const res = await this.http.get(
             "https://jsonplaceholder.typicode.com/posts",
             {}
         );
+        if (res.data === undefined) {
+            ctx.logger({
+                level: LogLevel.Error,
+                message:
+                    "something went wrong during get call of jsonPlaceholder Api",
+            });
+        }
         return res.data;
     };
-    handlePostRequest = async (ctx: KoaContext) => {
+    handlePostRequest = async (ctx: AppRouterContext) => {
         const userId = ctx?.query?.userId;
         const title = ctx?.query?.title;
         const body = ctx?.query?.body;
@@ -40,7 +45,14 @@ export class JsonPlaceHolder implements IJsonPlaceHolder {
                 data,
                 {}
             );
-            return request.config.data;
+            if (request === undefined || request?.config === undefined) {
+                ctx.logger({
+                    level: LogLevel.Error,
+                    message:
+                        "something went wrong  during post call for jsonPlaceholder Api",
+                });
+            }
+            return request?.config?.data;
         } else {
             ctx.throw(422, {
                 body: {
@@ -52,7 +64,7 @@ export class JsonPlaceHolder implements IJsonPlaceHolder {
             });
         }
     };
-    handlePutRequest = async (ctx: KoaContext) => {
+    handlePutRequest = async (ctx: AppRouterContext) => {
         const userId = ctx?.query?.userId;
         const title = ctx?.query?.title;
         const body = ctx?.query?.body;
@@ -74,7 +86,14 @@ export class JsonPlaceHolder implements IJsonPlaceHolder {
                 data,
                 {}
             );
-            return request.config.data;
+            if (request === undefined || request?.config === undefined) {
+                ctx.logger({
+                    level: LogLevel.Error,
+                    message:
+                        "something went wrong  during post call for jsonPlaceholder Api",
+                });
+            }
+            return request?.config?.data;
         } else {
             ctx.throw(422, {
                 body: {
@@ -87,7 +106,7 @@ export class JsonPlaceHolder implements IJsonPlaceHolder {
         }
     };
 
-    handleDeleteRequest = async (ctx: KoaContext) => {
+    handleDeleteRequest = async (ctx: AppRouterContext) => {
         let id: any = ctx?.query?.id;
 
         if (id !== undefined) {
@@ -112,10 +131,8 @@ export class JsonPlaceHolder implements IJsonPlaceHolder {
         }
     };
 }
-
-const router = new Router();
 const jsonPlaceholderInstance = new JsonPlaceHolder(HttpClient.getInstance());
-const routes: { url: string; methods: methods[]; route: Function }[] = [
+export const JsonRoutes: RoutesArray = [
     {
         url: "/posts",
         methods: ["GET"],
@@ -137,6 +154,3 @@ const routes: { url: string; methods: methods[]; route: Function }[] = [
         route: jsonPlaceholderInstance.handleDeleteRequest,
     },
 ];
-
-routeHelper(routes, router);
-export default router;

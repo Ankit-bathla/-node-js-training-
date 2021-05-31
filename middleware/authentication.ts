@@ -1,4 +1,4 @@
-import { KoaContext } from "../types";
+import { AppMiddlewareContext } from "../interface";
 interface Error {
     status?: number;
     message?: string;
@@ -6,7 +6,7 @@ interface Error {
 }
 
 interface IAuthentication {
-    handleAuth: (ctx: KoaContext, next: () => Promise<any>) => void;
+    handleAuth: (ctx: AppMiddlewareContext, next: () => Promise<any>) => void;
 }
 
 class Auth implements IAuthentication {
@@ -18,7 +18,14 @@ class Auth implements IAuthentication {
     }
     constructor() {}
 
-    handleAuth = async (ctx: KoaContext, next: () => Promise<any>) => {
+    handleAuth = async (
+        ctx: AppMiddlewareContext,
+        next: () => Promise<any>
+    ) => {
+        ctx.logger({
+            level: "info",
+            message: " successFully added logger in AppMiddlewareContest",
+        }); //  checking in customize Context is working
         if (
             ctx.path === "/" ||
             ctx.path === "/signUp" ||
